@@ -1,0 +1,64 @@
+# Contextual Methodology & Data Dictionary: Bloomberg Investment Outlooks (2019-2026)
+
+## 1. Introduction
+
+This document provides the methodological context for the dataset `Bloomberg_Outlooks_2019_2026_Desagregado1.xlsx`. This dataset is a longitudinal aggregation of Bloomberg's annual "Investment Outlooks" series, capturing the consensus and contrarian views of over 50 major financial institutions across eight years.
+
+The dataset is not a simple collection of random quotes; it is a structured representation of Bloomberg's **editorial curation process**. It reflects how the financial narrative has evolved from "Quantitative Tightening" in 2019 to "AI & Tariffs" in 2026, preserving the specific ranking and taxonomic logic applied by Bloomberg's editors at the time of publication.
+
+---
+
+## 2. Construction Logic & Methodology
+
+### 2.1. The "Living" Taxonomy
+Unlike rigid academic datasets, this database employs a **dynamic taxonomy** that shifts annually to reflect the market zeitgeist.
+*   **Core Continuity:** The `BASE CASE` theme exists in every year, serving as the anchor for the dataset. It represents the primary macro-economic forecast for that year.
+*   **Thematic Emergence:** New themes appear only when they become market-moving forces.
+    *   *2019:* Focused on "Trade" and "Quantitative Tightening".
+    *   *2021:* Introduced "COVID", "ESG", and "Rotation".
+    *   *2024:* Shifted to "AI", "Magnificent 7", and "Soft Landing".
+    *   *2026:* Centers on "Tariffs", "Fiscal Policy", and "AI Boom".
+*   **Implication:** Blank fields in `Sub_theme` or `Section_description` for earlier years are not errors; they indicate that Bloomberg's editorial format was less granular in those years. The dataset faithfully records *only* what was explicitly categorized at the time.
+
+### 2.2. The Ranking System (Conviction Metric)
+The `Rank` column is the most critical metadata field.
+*   **Not Alphabetical:** Institutions are **never** listed alphabetically.
+*   **Editorial Conviction:** The order represents Bloomberg's assessment of the "narrative fit" or "conviction" of the call.
+    *   **Rank 1-5:** The "Consensus Champions." These calls best articulate the dominant theme of the section (e.g., Citi's 2026 growth forecast aligning perfectly with the "Capex + Policy = Growth" narrative).
+    *   **Lower Ranks:** Variations, nuanced hedges, or less detailed views.
+*   **Replication Value:** To reproduce the "Bloomberg experience," one must respect this ordinal ranking. A randomized list would lose the narrative arc constructed by the editors.
+
+---
+
+## 3. Data Dictionary
+
+| Field Name | Data Type | Definition & Context |
+| :--- | :--- | :--- |
+| **id** | String | Unique identifier for each record, composed of `THEME-INSTITUTION-RANK-YEAR`. Ensures traceability. |
+| **Theme** | String | The top-level category (e.g., `BASE CASE`, `EQUITIES`, `RISKS`). This is the primary filter for analysis. |
+| **Sub_theme** | String | *Nullable.* The specific editorial headline for that section (e.g., "The Bull Market's Last Hurrah"). Provides narrative flavor. |
+| **Section_description** | Text | *Nullable.* The introductory summary written by Bloomberg editors. This serves as the "Ground Truth" or consensus definition for that section. |
+| **Rank** | Integer | The ordinal position (1 to N) of the call within its specific Year and Theme. Proxies for "Editorial Conviction." |
+| **Institution** | String | The name of the financial entity (Bank, Asset Manager, Research House) issuing the call. |
+| **Call_text** | Text | The verbatim excerpt of the investment outlook. This is the raw unstructured data. |
+| **Year** | Integer | The outlook year (e.g., 2026 calls are published in late 2025). |
+
+---
+
+## 4. Structural Evolution (2019-2026)
+
+The dataset reveals the evolution of Bloomberg's own reporting methodology:
+
+*   **Phase 1 (2019-2022):** **Broad Categorization.** Themes were general (`GROWTH`, `INFLATION`, `POLITICS`). The `Sub_theme` and `Section_description` fields are often empty as the format was more list-based.
+*   **Phase 2 (2023-2024):** **Granular Narratives.** Introduction of specific sub-narratives (`SOFT LANDING`, `MAGNIFICENT 7`). Metadata becomes richer.
+*   **Phase 3 (2025-2026):** **Structured Synthesis.** The current format. Every section has a clear `Sub_theme` (e.g., "Capex + Policy = Growth") and a detailed `Section_description`. The taxonomy is highly formalized, separating "Macro" (Growth, Inflation) from "Asset Classes" (Stocks, Bonds).
+
+## 5. Usage Guidelines for AI Agents
+
+When utilizing this dataset for RAG (Retrieval-Augmented Generation) or analysis:
+1.  **Respect the Rank:** When summarizing a theme, prioritize calls with `Rank < 10` to capture the consensus view. Use lower-ranked calls to find contrarian outliers.
+2.  **Filter by Year:** Always segment analysis by `Year`. A "Bullish" sentiment in 2019 (pre-COVID) has no relation to "Bullish" in 2021 (post-stimulus).
+3.  **Handle Nulls Gracefully:** Expect `Sub_theme` to be missing for pre-2023 data. Use `Theme` as the reliable fallback for categorization.
+
+---
+**Generated by Manus AI** | *Based on forensic analysis of Bloomberg Investment Outlooks (2019-2026)*
