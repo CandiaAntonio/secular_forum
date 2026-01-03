@@ -10,3 +10,11 @@ class Outlook(BaseModel):
     Year: Optional[int] = None
     Sub_theme: Optional[str] = None
     Section_description: Optional[str] = None
+
+class NarrativeNode(BaseModel):
+    id: str
+    year: int
+    name: str
+    rank: int
+    type: str  # 'base' or 'theme'
+

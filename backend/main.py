@@ -1,6 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.services import DataLoader
+from typing import List
+from app.models import NarrativeNode
 
 app = FastAPI(title="Secular Forum Dashboard API")
 
@@ -21,6 +23,11 @@ async def root():
 async def get_outlooks():
     data = DataLoader.get_outlooks()
     return data
+
+@app.get("/api/narrative-river", response_model=List[NarrativeNode])
+async def get_narrative_river():
+    return DataLoader.get_narrative_river_data()
+
 
 @app.get("/health")
 async def health_check():
